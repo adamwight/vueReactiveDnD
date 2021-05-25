@@ -1,7 +1,5 @@
-import {provide, computed, reactive, unref, watch} from './vue/vue.js';
+import {provide, reactive, ref} from './vue/vue.js';
 import {useDragDiffProvider} from './useDragDiffProvider.js';
-import {useSingleSelectionProvider} from './useSelectionProvider.js';
-import {useElementListStore} from './useElementListStore.js'
 //import {useDroppableProvider} from './useDroppableProvider.js';
 import {findDropTarget} from './collisionHelpers.js';
 import {computeDragRect, computeSelectionEnclosingRect, computeOverDroppableIds} from './dragUtils.js'
@@ -12,41 +10,9 @@ const dragContext = {
         onDragend: Function
     },
     setup: function (props, context){
-        // SELECTION PROVISION
-        let {
-            selectedElement,
-            clearSelection, //currently, we never clear selection, it is just the element you clicked on last. 
-            setSelectedElement
-        } = useSingleSelectionProvider();
-
-        // These are needed by draggables to set themselves as selected. 
-        // (when the drag begins, the selected element is moved. )
-        provide('setSelection', setSelectedElement);
-        provide('selectedElement', selectedElement);
-
-
-
-        //==DROPPABLE PROVISION==
-        const {
-            elementList: droppableList,
-            addElement: addDroppableElement,
-            removeElement: removeDroppableElement
-        } = useElementListStore();
-        
-        //for the droppables to register themselves. 
-        provide('addDroppableElement', addDroppableElement);
-        provide('removeDroppableElement', removeDroppableElement);
-
-        //==DRAGGABLE PROVISION==
-        const {
-            elementList: draggableList,
-            addElement: addDraggableElement,
-            removeElement: removeDraggableElement
-        } = useElementListStore();
-
-        provide('addDraggableElement', addDraggableElement);
-        provide('removeDraggableElement', removeDraggableElement);
-
+        const selectedElement = ref(null);
+        const droppableList = new Map();
+        const draggableList = new Map();
 
         //DRAG DIFF PROVISION
         let {

@@ -1,19 +1,14 @@
 import {inject,onMounted,onUnmounted} from './vue/vue.js';
 
-function makeDroppable(id, domRef){
-    const addDroppableElement = inject("addDroppableElement");
-    const removeDroppableElement = inject("removeDroppableElement");
+function makeDroppable(id, emit){
 
-    
     onMounted(()=>{
-        addDroppableElement(id,domRef);
+        emit('register-droppable', id);
     });
 
     onUnmounted(()=>{
-        removeDroppableElement(id);
+        emit('deregister-droppable', id);
     });
-
-    return {};
 }
 
 export {makeDroppable};

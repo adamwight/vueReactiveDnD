@@ -1,28 +1,19 @@
-import { inject, computed, onMounted, onUnmounted } from './vue/vue.js';
+import { computed, inject, onMounted, onUnmounted, ref } from './vue/vue.js';
 
-function makeDraggable(id, domDraggable){
+function makeDraggable(id, emit){
+    const isSelected = ref(false);
     
-    //register and unregister to dragContext
-    const addDraggableElement = inject("addDraggableElement");
-    const removeDraggableElement = inject("removeDraggableElement");
-
     onMounted(()=>{
-        addDraggableElement(id,domDraggable);
+        emit('register-draggable', id);
     });
 
     onUnmounted(()=>{
-        removeDraggableElement(id);
+        emit('deregister-draggable', id);
     });
 
-
-    const isDragging = inject("isDragging");
-    
-    // allow setting selection for this element
-    const setSelection = inject("setSelection");
-    const selection = inject("selectedElement");
-    
     const mousedown = function(e){
-        setSelection(id,domDraggable);
+        isSelected.value = true; // TODO: dragEnd resets.
+        emit('drag', id);
     };
     
     
@@ -32,7 +23,7 @@ function makeDraggable(id, domDraggable){
     
     const styleTransform = computed(function(){
         let transformValue = "translate("+0+"px,"+ 0 +"px)"; //do not move element, except...
-        if(selection.value === id){ //...if this element is selected
+        if (isSelected.value) {
             transformValue = "translate("+diffToDownPoint.value.x+"px,"+ diffToDownPoint.value.y +"px)";
         }
         return {
@@ -41,7 +32,7 @@ function makeDraggable(id, domDraggable){
      });
 
      return{
-        isDragging,
+        isSelected,
         styleTransform,
         mousedown, //event handler for selection
      };

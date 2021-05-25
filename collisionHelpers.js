@@ -7,11 +7,11 @@ import {unref} from './vue/vue.js'
  * @param {*} mode 
  * @returns 
  */
-const findDropTarget = function(draggableElements,droppableElements, draggedId){
+const findDropTarget = function(draggableElements,droppableElements, selectedElement){
     //if this would be universal, there would be the choice of selected Elements and point
     //point being useful when dragging many elements (then the mouse cursor counts)
     //selectedWhenDraggingOneElement, I guess. 
-    const draggedElement = draggableElements.get(unref(draggedId));
+    const draggedElement = draggableElements.get(selectedElement.value);
     const targetId = whereIsRectContained(droppableElements,draggedElement);
     return targetId;
 };
@@ -45,7 +45,7 @@ const whereIsRectContained = function(droppables,draggedDom){
         }
     });
 
-    return containment[0];
+    return containment[0] || null;
 };
 
 const whereIsPointContained = function(containers, point){

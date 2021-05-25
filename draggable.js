@@ -6,14 +6,15 @@ const draggable = {
     props:{
         id:String
     },
-    setup: function(props, context){
+    emits: [ 'drag' ],
+    setup: function(props, { emit }){
         const domDraggable = ref(null); //needed so that it can be set in the template
         
         const{
-            isDragging,
+            isSelected,
             styleTransform,
             mousedown
-        }= makeDraggable(props.id,domDraggable);
+        }= makeDraggable(props.id, emit);
        
 
         const styleDefault = {
@@ -24,7 +25,6 @@ const draggable = {
             domDraggable, //to set the ref in the template
             styleDefault,
             //from hook: 
-            isDragging,
             styleTransform,
             mousedown
         };

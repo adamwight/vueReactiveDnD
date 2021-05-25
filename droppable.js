@@ -8,10 +8,10 @@ const droppable = {
     props:{
         id:String
     },
-    setup: function(props, context){
+    setup: function(props, { emit }){
         const domDroppable = ref(null);
 
-        makeDroppable(props.id, domDroppable);
+        makeDroppable(props.id, emit);
 
         return {domDroppable};
     },

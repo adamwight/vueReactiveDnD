@@ -29,31 +29,29 @@ const computeDragRect = function(dragdiff, selectionRect){
 
 
 //get a rectangle enclosing the selected elements 
-const computeSelectionEnclosingRect = function(selectedElementsId,selectableElements){
+const computeSelectionEnclosingRect = function(selectedElement,selectableElements){
 
-    const selectionRect = computed(()=>{
-        let selectionRectData = {
-            x:null, 
-            y:null,
-            width: null, 
-            height: null
-        };
-
-    
-        selectedElementsId.forEach(id => {
+    return computed(()=>{
+        if ( selectedElement !== null ) {
             singleElementBoundingRect = selectableElements.get(id).getBoundingClientRect();
             //take position coordinates that are more top-left
-            selectionRectData.x     = selectionRectData.x < singleElementBoundingRect.x ? selectionRectData.x: singleElementBoundingRect.x;
-            selectionRectData.y     = selectionRectData.y < singleElementBoundingRect.y ? selectionRectData.y: singleElementBoundingRect.y;
-            //take size coordinates if more  bottom-right
-            selectionRectData.width = selectionRectData.width > singleElementBoundingRect.width ? selectionRectData.width: singleElementBoundingRect.width;
-            selectionRectData.heigth = selectionRectData.heigth > singleElementBoundingRect.heigth ? selectionRectData.heigth: singleElementBoundingRect.heigth;
-        });
 
-        return selectionRectData;
+            return {
+                x: selectionRectData.x < singleElementBoundingRect.x ? selectionRectData.x: singleElementBoundingRect.x,
+                y: selectionRectData.y < singleElementBoundingRect.y ? selectionRectData.y: singleElementBoundingRect.y,
+                //take size coordinates if more  bottom-right
+                width: selectionRectData.width > singleElementBoundingRect.width ? selectionRectData.width: singleElementBoundingRect.width,
+                height: selectionRectData.height > singleElementBoundingRect.height ? selectionRectData.height: singleElementBoundingRect.height
+            }
+        } else {
+            return selectionRectData = {
+                x:null, 
+                y:null,
+                width: null, 
+                height: null
+            };
+        }
     });
-
-    return selectionRect;
 };
 
 export {computeDragRect, computeSelectionEnclosingRect, computeOverDroppableIds};
